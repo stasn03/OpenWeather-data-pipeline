@@ -9,7 +9,8 @@ class WeatherDataPipeline:
         self.city= city
         self.weather_data= self._fetch_data()
         self._clean_data()
-        self._connect_to_database()
+        self.conn= self._connect_to_database()
+        self._insert_to_database()
 
     def display_data(self):
         for i in self.weather_data.items():
@@ -35,18 +36,41 @@ class WeatherDataPipeline:
             print("Failed to fetch data")
 
     def _connect_to_database(self):
-        conn= psycopg2.connect(
-            dbname= DBNAME,
-            user= USERNAME,
-            password= PASSWORD,
-            host= HOST,
-            port= PORT
+        try:
+            conn= psycopg2.connect(
+                dbname= DBNAME,
+                user= USERNAME,
+                password= PASSWORD,
+                host= HOST,
+                port= PORT
+            )
+
+            return conn
+        except Exception as e:
+            print(f"Error: {e}")
+        
+    def _insert_to_database(self):
+        cursor= self.conn.cursor()
+        insert_query= """
+        INSERT INTO weather_log(timestamp, country, city, temperature, humidity, wind_speed) 
+        VALUES(%s, %s, %s, %s, %s, %s);
+        """
+
+        data= (
+        self.weather_data["timestamp"],
+        self.weather_data["country"],
+        self.weather_data["city"],
+        self.weather_data["temp"],
+        self.weather_data["humidity"],
+        self.weather_data["wind_speed"]
         )
 
+        cursor.execute(insert_query, data)
+        self.conn.commit()
+        cursor.close()
+
 
     
     
-
-
 weather_pipeline= WeatherDataPipeline("London")
 weather_pipeline.display_data()
