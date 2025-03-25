@@ -1,16 +1,25 @@
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import psycopg2
+import time
+import threading
 from API_KEY import KEY
 from PSQL_DATA import DBNAME, USERNAME, PASSWORD, HOST, PORT
 
 class WeatherDataPipeline:
     def __init__(self, city):
         self.city= city
-        self.weather_data= self._fetch_data()
-        self._clean_data()
         self.conn= self._connect_to_database()
-        self._insert_to_database()
+
+    def run(self):
+        while True:
+            self.weather_data= self._fetch_data()
+            self._clean_data()
+            self._insert_to_database()
+            print(f"Data inserted:")
+            self.display_data()
+
+            time.sleep(3600)
 
     def display_data(self):
         for i in self.weather_data.items():
@@ -68,9 +77,17 @@ class WeatherDataPipeline:
         cursor.execute(insert_query, data)
         self.conn.commit()
         cursor.close()
+        
 
+cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
+threads= []
 
-    
-    
-weather_pipeline= WeatherDataPipeline("London")
-weather_pipeline.display_data()
+for city in cities:
+    pipeline= WeatherDataPipeline(city)
+    weather_thread= threading.Thread(target= pipeline.run)
+    threads.append(weather_thread)
+    weather_thread.start()
+
+for thread in threads:
+    thread.join()
+
