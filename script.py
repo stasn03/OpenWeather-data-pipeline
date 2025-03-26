@@ -12,14 +12,17 @@ class WeatherDataPipeline:
         self.conn= self._connect_to_database()
 
     def run(self):
-        while True:
-            self.weather_data= self._fetch_data()
-            self._clean_data()
-            self._insert_to_database()
-            print(f"Data inserted:")
-            self.display_data()
+        try:
+            while True:
+                self.weather_data= self._fetch_data()
+                self._clean_data()
+                self._insert_to_database()
+                print(f"Data inserted:")
+                self.display_data()
 
-            time.sleep(3600)
+                time.sleep(3600)
+        except Exception as e:
+            print(f"Pipeline failed: {e}")
 
     def display_data(self):
         for i in self.weather_data.items():
