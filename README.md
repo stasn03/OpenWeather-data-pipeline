@@ -27,12 +27,14 @@ Before running this project, ensure that you have the following installed:
 - Required Python libraries:
   - `requests`
   - `psycopg2`
+  - `dotenv`
   
 To install the required Python libraries, run:
 
 ```bash
 pip install requests
 pip install psycopg2
+pip install python-dotenv
 ```
 
 ### Setup
