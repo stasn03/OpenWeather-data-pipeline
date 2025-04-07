@@ -3,9 +3,10 @@ from datetime import datetime, timezone, timedelta
 import psycopg2
 import time
 import threading
-from API_KEY import KEY
-from PSQL_DATA import DBNAME, USERNAME, PASSWORD, HOST, PORT
+import os
+from dotenv import find_dotenv, load_dotenv
 
+load_dotenv(find_dotenv())
 class WeatherDataPipeline:
     def __init__(self, city):
         self.city= city
@@ -33,13 +34,13 @@ class WeatherDataPipeline:
             "timestamp": datetime.fromtimestamp(self.weather_data["dt"], tz= timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
             "country": self.weather_data["sys"]["country"],
             "city": self.weather_data["name"],
-            "temp": round(self.weather_data["main"]["temp"] - 273.15, 2), # convert from kelvin to celsius
+            "temp": int(self.weather_data["main"]["temp"] - 273.15), # convert from kelvin to celsius
             "humidity": self.weather_data["main"]["humidity"],
             "wind_speed": self.weather_data["wind"]["speed"]
         }
         
     def _fetch_data(self):
-        URL= f"https://api.openweathermap.org/data/2.5/weather?q={self.city}&appid={KEY}"      
+        URL= f"https://api.openweathermap.org/data/2.5/weather?q={self.city}&appid={os.getenv('KEY')}"      
         response= requests.get(URL)
 
         if response.status_code == 200:
@@ -50,11 +51,11 @@ class WeatherDataPipeline:
     def _connect_to_database(self):
         try:
             conn= psycopg2.connect(
-                dbname= DBNAME,
-                user= USERNAME,
-                password= PASSWORD,
-                host= HOST,
-                port= PORT
+                dbname= os.getenv('DBNAME'),
+                user= os.getenv('USERNAME'),
+                password= os.getenv('PASSWORD'),
+                host= os.getenv('HOST'),
+                port= os.getenv('PORT')
             )
 
             return conn
