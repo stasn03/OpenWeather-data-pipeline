@@ -52,7 +52,7 @@ class WeatherDataPipeline:
         try:
             conn= psycopg2.connect(
                 dbname= os.getenv('DBNAME'),
-                user= os.getenv('USERNAME'),
+                user= os.getenv('USER'),
                 password= os.getenv('PASSWORD'),
                 host= os.getenv('HOST'),
                 port= os.getenv('PORT')
