@@ -54,5 +54,5 @@ git clone "https://github.com/stasn03/OpenWeather-data-pipeline.git"
 To start the weather data pipeline, simply run the script.py file:
 
 ```bash
-python main.py
+python script.py
 ```
