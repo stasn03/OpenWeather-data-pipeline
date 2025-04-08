@@ -38,7 +38,7 @@ class WeatherDataPipeline:
             df= pd.concat([df, df2])
 
         df.to_csv("weather_log.csv")
-    
+
     def display_data(self):
         for i in self.weather_data.items():
             print(i)
