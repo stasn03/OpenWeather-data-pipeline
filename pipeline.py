@@ -95,17 +95,4 @@ class WeatherDataPipeline:
         cursor.execute(insert_query, data)
         self.conn.commit()
         cursor.close()
-        
-
-# cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
-# threads= []
-
-# for city in cities:
-#     pipeline= WeatherDataPipeline(city)
-#     weather_thread= threading.Thread(target= pipeline.run)
-#     threads.append(weather_thread)
-#     weather_thread.start()
-
-# for thread in threads:
-#     thread.join()
 

@@ -1,3 +1,4 @@
+# OUTDATED
 # Weather Data Pipeline
 
 This project collects and stores weather data from multiple cities on an hourly basis, using the OpenWeatherMap API. The data is then cleaned and stored in a PostgreSQL database for further analysis.

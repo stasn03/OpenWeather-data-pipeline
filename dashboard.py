@@ -20,7 +20,3 @@ elif st.button("Run"):
 
     for thread in threads:
         thread.join()
-
-elif st.button("Stop"):
-    pipeline= dp(cities[0])
-    pipeline.stop()
