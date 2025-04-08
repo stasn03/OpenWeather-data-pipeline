@@ -1,9 +1,10 @@
 import requests
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import psycopg2
 import time
 import threading
 import os
+import pandas as pd
 from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
@@ -24,7 +25,20 @@ class WeatherDataPipeline:
                 time.sleep(3600)
         except Exception as e:
             print(f"Pipeline failed: {e}")
+    
+    def download_csv(self):
+        cursor= self.conn.cursor()
+        weather_log= "SELECT * FROM weather_log"
+        cursor.execute(weather_log)
+        result= cursor.fetchall()
 
+        df= pd.DataFrame()
+        for i in result:
+            df2= pd.DataFrame(list(i)).T
+            df= pd.concat([df, df2])
+
+        df.to_csv("weather_log.csv")
+    
     def display_data(self):
         for i in self.weather_data.items():
             print(i)
@@ -83,15 +97,15 @@ class WeatherDataPipeline:
         cursor.close()
         
 
-cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
-threads= []
+# cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
+# threads= []
 
-for city in cities:
-    pipeline= WeatherDataPipeline(city)
-    weather_thread= threading.Thread(target= pipeline.run)
-    threads.append(weather_thread)
-    weather_thread.start()
+# for city in cities:
+#     pipeline= WeatherDataPipeline(city)
+#     weather_thread= threading.Thread(target= pipeline.run)
+#     threads.append(weather_thread)
+#     weather_thread.start()
 
-for thread in threads:
-    thread.join()
+# for thread in threads:
+#     thread.join()
 
