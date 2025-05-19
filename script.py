@@ -83,15 +83,16 @@ class WeatherDataPipeline:
         cursor.close()
         
 
-cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
-threads= []
+if __name__ == "__main__":
+    cities= ["London", "New York", "Paris", "Berlin", "Beijing"]
+    threads= []
 
-for city in cities:
-    pipeline= WeatherDataPipeline(city)
-    weather_thread= threading.Thread(target= pipeline.run)
-    threads.append(weather_thread)
-    weather_thread.start()
+    for city in cities:
+        pipeline= WeatherDataPipeline(city)
+        weather_thread= threading.Thread(target= pipeline.run)
+        threads.append(weather_thread)
+        weather_thread.start()
 
-for thread in threads:
-    thread.join()
+    for thread in threads:
+        thread.join()
 
